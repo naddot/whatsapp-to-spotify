@@ -88,6 +88,7 @@
             display: flex;
             flex-direction: column;
             gap: 1rem;
+            margin-bottom: 1rem;
         }
 
         label {
@@ -216,6 +217,13 @@
           {% endif %}
         {% endwith %}
 
+        {% if not authenticated %}
+          <form action="/connect" method="GET">
+              <button type="submit">🔑 Connect to Spotify</button>
+          </form>
+        {% endif %}
+
+        {% if authenticated %}
         <form action="/" method="POST" enctype="multipart/form-data">
             <label for="playlist_name">🎶 Playlist Name:</label>
             <input type="text" id="playlist_name" name="playlist_name" placeholder="e.g. WhatsApp Songs" required>
@@ -227,6 +235,7 @@
 
             <button type="submit">🚀 Create / Update Playlist</button>
         </form>
+        {% endif %}
 
         <p class="info">
             💡 Tip: Export a WhatsApp chat using <strong>"Email Chat"</strong> without media. Save or download the `.txt` file (or extract it from the `.zip`) and upload it here. We’ll add the songs to your Spotify playlist!
@@ -244,7 +253,7 @@
         const fileInput = document.getElementById('chat_file');
         const fileDisplay = document.getElementById('fileNameDisplay');
 
-        fileInput.addEventListener('change', () => {
+        fileInput?.addEventListener('change', () => {
             const fileName = fileInput.files[0]?.name || '';
             fileDisplay.textContent = fileName ? `Selected: ${fileName}` : '';
         });
