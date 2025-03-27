@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WhatsApp to Spotify Playlist</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 2rem auto;
+            padding: 1rem;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            box-shadow: 0 0 12px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #1DB954;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        input[type="text"], input[type="file"] {
+            padding: 0.5rem;
+            font-size: 1rem;
+        }
+        button {
+            background-color: #1DB954;
+            color: white;
+            padding: 0.6rem;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #1aa34a;
+        }
+        .flash {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+            padding: 0.75rem;
+            margin-bottom: 1rem;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>📲 WhatsApp ➜ Spotify</h1>
+
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        {% for message in messages %}
+          <div class="flash">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <form action="/" method="POST" enctype="multipart/form-data">
+        <label for="playlist_name">🎶 Playlist Name:</label>
+        <input type="text" id="playlist_name" name="playlist_name" placeholder="e.g. WhatsApp Songs" required>
+
+        <label for="chat_file">📎 Upload WhatsApp .zip or .txt:</label>
+        <input type="file" id="chat_file" name="chat_file" accept=".zip,.txt" required>
+
+        <button type="submit">🚀 Create / Update Playlist</button>
+    </form>
+
+    <p style="margin-top: 2rem; font-size: 0.9rem; color: #555;">
+        💡 Tip: Export your WhatsApp chat using "Email Chat" (without media), download the attached .txt file, and upload it here.
+    </p>
+</body>
+</html>
