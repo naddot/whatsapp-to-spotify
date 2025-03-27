@@ -59,15 +59,17 @@ with st.expander("ℹ️ How to export a WhatsApp chat (.txt file)"):
     1. 📂 Open WhatsApp > the chat you want to export
     2. 👤 Tap the contact's name or group title
     3. 📤 Tap **Export Chat** > Choose **Without Media**
-    4. 💾 Save to **Files** > Select a location you'll remember
+    4. 💾 Choose **Save to Files** > Pick a folder (e.g. iCloud Drive or local)
+    5. 📦 WhatsApp will save the export as a `.zip` with a `.txt` inside
 
     **🤖 On Android:**
     1. 📂 Open WhatsApp > the chat you want to export
-    2. ⋮ Tap the 3 dots in the top right > **More** > **Export Chat**
-    3. 📤 Choose **Without Media**
-    4. 💾 Save to your phone or Google Drive
+    2. ⋮ Tap the 3 dots > **More** > **Export Chat** > **Without Media**
+    3. 💾 Choose **Save to Drive** or another cloud storage option
+    4. 📥 Once uploaded, go to Google Drive app
+    5. 📁 Locate the `.zip`, tap it, then **Download** it to your device
 
-    ⚠️ Note: WhatsApp may export your chat as a `.zip` file. This app will automatically extract the `.txt` file for you.
+    ✅ You can now upload that `.zip` file here. This app will extract the `.txt` for you automatically.
     """)
 
 uploaded_file = st.file_uploader("📎 Upload WhatsApp .zip or .txt File", type=["txt", "zip"])
