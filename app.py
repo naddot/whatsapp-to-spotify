@@ -6,20 +6,20 @@ from werkzeug.utils import secure_filename
 from spotipy import Spotify
 from spotipy.oauth2 import SpotifyOAuth
 from dotenv import load_dotenv
+from zipfile import is_zipfile
+
 load_dotenv()
 
 app = Flask(__name__)
-app.secret_key = 'your-secret-key'
+app.secret_key = os.getenv("FLASK_SECRET_KEY", "dev-secret")
 UPLOAD_FOLDER = 'uploads'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-app.secret_key = os.getenv("FLASK_SECRET_KEY", "dev-secret")
 
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 os.environ['SPOTIPY_CLIENT_ID'] = os.getenv("SPOTIPY_CLIENT_ID")
 os.environ['SPOTIPY_CLIENT_SECRET'] = os.getenv("SPOTIPY_CLIENT_SECRET")
 os.environ['SPOTIPY_REDIRECT_URI'] = os.getenv("SPOTIPY_REDIRECT_URI")
-
 
 SCOPE = 'playlist-modify-public playlist-modify-private'
 
@@ -56,8 +56,6 @@ def index():
             flash("Please provide both a playlist name and a file.")
             return redirect(url_for('index'))
 
-        from zipfile import is_zipfile
-
         filename = secure_filename(file.filename)
         file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         file.save(file_path)
@@ -77,7 +75,6 @@ def index():
             flash("Unsupported file format. Upload a .zip or .txt file.")
             return redirect(url_for('index'))
 
-
         track_ids = extract_spotify_track_ids(chat_text)
         if not track_ids:
             flash("No Spotify track links found in the file.")
@@ -85,12 +82,9 @@ def index():
 
         sp_oauth = SpotifyOAuth(scope=SCOPE)
         token_info = session.get('token_info')
-        
-        sp_oauth = SpotifyOAuth(scope=SCOPE)
-        token_info = session.get('token_info')
 
         if not token_info or sp_oauth.is_token_expired(token_info):
-            session.pop('token_info', None)  # Clear expired token just in case
+            session.pop('token_info', None)
             flash("Please log in with Spotify to continue.")
             return redirect(sp_oauth.get_authorize_url())
 
@@ -111,7 +105,13 @@ def index():
 
         return redirect(url_for('index'))
 
-    return render_template('index.html')
+    return render_template('index.html', authenticated='token_info' in session)
+
+@app.route('/connect')
+def connect():
+    sp_oauth = SpotifyOAuth(scope=SCOPE)
+    auth_url = sp_oauth.get_authorize_url()
+    return redirect(auth_url)
 
 @app.route('/callback')
 def callback():
@@ -126,8 +126,6 @@ def callback():
     session['token_info'] = token_info
     flash("Spotify authentication successful.")
     return redirect(url_for('index'))
-
-
 
 if __name__ == '__main__':
     app.run(debug=True)
