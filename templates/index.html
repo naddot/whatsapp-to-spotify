@@ -1,6 +1,101 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, viewport-fit=cover">
+  <title>WhatsApp ➜ Spotify</title>
+  <style>
+    :root {
+      --primary: #1DB954;
+      --primary-dark: #17a34a;
+      --bg-light: #f5f5f5;
+      --text-dark: #333;
+      --bg-dark: #121212;
+      --text-light: #eaeaea;
+      --card-dark: #1f1f1f;
+      --shadow: 0 4px 20px rgba(0,0,0,0.05);
+    }
+
+    * {
+      -webkit-tap-highlight-color: transparent;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: var(--bg-light);
+      color: var(--text-dark);
+      -webkit-font-smoothing: antialiased;
+      -webkit-user-select: none;
+      user-select: none;
+      overflow-x: hidden;
+    }
+
+    .splash {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: var(--primary);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      z-index: 9999;
+      font-size: 1.5rem;
+      animation: fadeSplash 1.2s forwards;
+    }
+
+    .splash-text {
+      animation: bounce 1.4s ease-in-out infinite;
+    }
+
+    .splash-sub {
+      font-size: 0.85rem;
+      opacity: 0.8;
+      margin-top: 0.5rem;
+      animation: fadeInUp 1.5s ease forwards;
+    }
+
+    @keyframes bounce {
+      0%, 100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-5px);
+      }
+    }
+
+    @keyframes fadeSplash {
+      0% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { opacity: 0; visibility: hidden; }
+    }
+
+    @keyframes fadeInUp {
+      0% { opacity: 0; transform: translateY(10px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <div class="splash">
+    <div class="splash-text">🎧 WhatsApp ➜ Spotify</div>
+    <div class="splash-sub">Loading your music magic...</div>
+  </div>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, viewport-fit=cover">
     <title>WhatsApp ➜ Spotify</title>
@@ -278,5 +373,9 @@
             fileDisplay.textContent = fileName ? `Selected: ${fileName}` : '';
         });
     </script>
+</body>
+</html>
+
+
 </body>
 </html>
