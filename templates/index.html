@@ -391,11 +391,6 @@
           <form action="/connect" method="GET">
               <button type="submit">🔑 Connect to Spotify</button>
           </form>
-          {% if show_billboard %}
-          <div style="text-align:center; margin-top: 1.5rem;">
-            <a href="{{ url_for('billboard') }}" class="file-upload-label" style="display:inline-block; padding:0.75rem 1rem; font-size:0.95rem; text-decoration:none;">📈 View Billboard</a>
-          </div>
-          {% endif %}
         {% endif %}
 
         {% if authenticated %}
