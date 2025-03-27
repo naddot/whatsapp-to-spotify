@@ -1,20 +1,24 @@
 import os
 import zipfile
 import re
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, session
 from werkzeug.utils import secure_filename
 from spotipy import Spotify
 from spotipy.oauth2 import SpotifyOAuth
+from dotenv import load_dotenv
+load_dotenv()
 
 app = Flask(__name__)
 app.secret_key = 'your-secret-key'
 UPLOAD_FOLDER = 'uploads'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.secret_key = os.getenv("FLASK_SECRET_KEY", "dev-secret")
 
-# Set environment variables (use dotenv or set them securely for production)
-os.environ['SPOTIPY_CLIENT_ID'] = 'your-client-id'
-os.environ['SPOTIPY_CLIENT_SECRET'] = 'your-client-secret'
-os.environ['SPOTIPY_REDIRECT_URI'] = 'http://localhost:5000/callback'
+
+os.environ['SPOTIPY_CLIENT_ID'] = os.getenv("SPOTIPY_CLIENT_ID")
+os.environ['SPOTIPY_CLIENT_SECRET'] = os.getenv("SPOTIPY_CLIENT_SECRET")
+os.environ['SPOTIPY_REDIRECT_URI'] = os.getenv("SPOTIPY_REDIRECT_URI")
+
 
 SCOPE = 'playlist-modify-public playlist-modify-private'
 
@@ -75,7 +79,18 @@ def index():
             flash("No Spotify track links found in the file.")
             return redirect(url_for('index'))
 
-        sp = Spotify(auth_manager=SpotifyOAuth(scope=SCOPE))
+        sp_oauth = SpotifyOAuth(scope=SCOPE)
+        token_info = session.get('token_info')
+        
+        sp_oauth = SpotifyOAuth(scope=SCOPE)
+        token_info = session.get('token_info')
+
+        if not token_info or sp_oauth.is_token_expired(token_info):
+            session.pop('token_info', None)  # Clear expired token just in case
+            flash("Please log in with Spotify to continue.")
+            return redirect(sp_oauth.get_authorize_url())
+
+        sp = Spotify(auth=token_info['access_token'])
         user_id = sp.me()['id']
 
         playlist_id, created = get_or_create_playlist(sp, user_id, playlist_name)
@@ -86,12 +101,29 @@ def index():
             for i in range(0, len(new_tracks), 100):
                 sp.playlist_add_items(playlist_id, new_tracks[i:i+100])
             flash(f"Added {len(new_tracks)} tracks to '{playlist_name}'.")
+            flash(f"✅ Playlist updated! <a href='https://open.spotify.com/playlist/{playlist_id}' target='_blank'>View it on Spotify</a>.")
         else:
             flash("All songs from the file are already in the playlist.")
 
         return redirect(url_for('index'))
 
     return render_template('index.html')
+
+@app.route('/callback')
+def callback():
+    sp_oauth = SpotifyOAuth(scope=SCOPE)
+    code = request.args.get('code')
+    token_info = sp_oauth.get_access_token(code)
+
+    if not token_info:
+        flash("Failed to get access token from Spotify.")
+        return redirect(url_for('index'))
+
+    session['token_info'] = token_info
+    flash("Spotify authentication successful.")
+    return redirect(url_for('index'))
+
+
 
 if __name__ == '__main__':
     os.makedirs(UPLOAD_FOLDER, exist_ok=True)
