@@ -3,6 +3,8 @@ import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 import re
 import os
+import zipfile
+import io
 
 # === Set environment variables using Streamlit secrets ===
 os.environ['SPOTIPY_CLIENT_ID'] = st.secrets["SPOTIPY_CLIENT_ID"]
@@ -49,7 +51,7 @@ st.set_page_config(page_title="WhatsApp to Spotify", layout="centered")
 
 st.title("📲 WhatsApp to Spotify Playlist")
 
-st.markdown("Upload a WhatsApp chat export (.txt) and we'll add all the Spotify songs to a playlist in your account.")
+st.markdown("Upload a WhatsApp chat export (.zip or .txt) and we'll add all the Spotify songs to a playlist in your account.")
 
 with st.expander("ℹ️ How to export a WhatsApp chat (.txt file)"):
     st.markdown("""
@@ -64,21 +66,34 @@ with st.expander("ℹ️ How to export a WhatsApp chat (.txt file)"):
     2. ⋮ Tap the 3 dots in the top right > **More** > **Export Chat**
     3. 📤 Choose **Without Media**
     4. 💾 Save to your phone or Google Drive
+
+    ⚠️ Note: WhatsApp may export your chat as a `.zip` file. This app will automatically extract the `.txt` file for you.
     """)
 
-uploaded_file = st.file_uploader("📎 Upload WhatsApp .txt File", type="txt")
+uploaded_file = st.file_uploader("📎 Upload WhatsApp .zip or .txt File", type=["txt", "zip"])
 playlist_name = st.text_input("🎶 Playlist Name", value="WhatsApp Songs")
 
 if st.button("🚀 Create / Update Playlist"):
     if not uploaded_file:
-        st.error("❌ Please upload a WhatsApp chat file.")
+        st.error("❌ Please upload a WhatsApp chat file (.zip or .txt).")
     elif not playlist_name.strip():
         st.error("❌ Please enter a playlist name.")
     else:
         try:
             sp = authenticate_user()
             user_id = sp.me()['id']
-            chat_text = uploaded_file.read().decode('utf-8')
+
+            # === Read uploaded content ===
+            if uploaded_file.name.endswith(".zip"):
+                with zipfile.ZipFile(uploaded_file) as z:
+                    txt_files = [f for f in z.namelist() if f.endswith(".txt")]
+                    if not txt_files:
+                        st.error("❌ No .txt file found in the .zip archive.")
+                        st.stop()
+                    with z.open(txt_files[0]) as txt_file:
+                        chat_text = txt_file.read().decode('utf-8')
+            else:
+                chat_text = uploaded_file.read().decode('utf-8')
 
             track_ids = extract_spotify_track_ids(chat_text)
             if not track_ids:
