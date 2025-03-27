@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Share Playlist?</title>
+  <style>
+    :root {
+      color-scheme: dark light;
+    }
+
+    body.dark-mode {
+      background-color: #121212;
+      color: #eee;
+    }
+
+    .card.dark-mode {
+      background-color: #1e1e1e;
+      color: #eee;
+      box-shadow: 0 4px 12px rgba(255, 255, 255, 0.05);
+    }
+
+    .skip-btn.dark-mode {
+      background-color: #333;
+      color: #ccc;
+    }
+
+    .skip-btn.dark-mode:hover {
+      background-color: #444;
+    }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      padding: 2rem;
+      background-color: #f9f9f9;
+      text-align: center;
+    }
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 2rem;
+      max-width: 400px;
+      margin: 2rem auto;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+    h2 {
+      color: #1DB954;
+      margin-bottom: 1rem;
+    }
+    p {
+      font-size: 1rem;
+      color: #444;
+      margin-bottom: 1.5rem;
+    }
+    form {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    button {
+      padding: 0.75rem 1.25rem;
+      font-size: 1rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+    .share-btn {
+      background-color: #1DB954;
+      color: white;
+    }
+    .share-btn:hover {
+      background-color: #169e48;
+    }
+    .skip-btn {
+      background-color: #e0e0e0;
+      color: #333;
+    }
+    .skip-btn:hover {
+      background-color: #ccc;
+    }
+  </style>
+</head>
+<body class="dark-mode">
+  <div class="card dark-mode">
+    <h2>🎉 Playlist Created!</h2>
+    <p>Do you want to add your playlist to the public <strong>Billboard</strong>?</p>
+    <form method="POST" action="/share">
+      <input type="hidden" name="playlist_id" value="{{ playlist_id }}" />
+      <button class="share-btn" type="submit">📢 Yes, Share it!</button>
+      <a href="/" class="skip-btn dark-mode" style="text-decoration:none; display:inline-block; padding:0.75rem 1.25rem; border-radius:8px;">🚫 Skip</a>
+    </form>
+  </div>
+</body>
+</html>

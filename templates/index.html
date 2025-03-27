@@ -391,6 +391,11 @@
           <form action="/connect" method="GET">
               <button type="submit">🔑 Connect to Spotify</button>
           </form>
+          {% if show_billboard %}
+          <div style="text-align:center; margin-top: 1.5rem;">
+            <a href="{{ url_for('billboard') }}" class="file-upload-label" style="display:inline-block; padding:0.75rem 1rem; font-size:0.95rem; text-decoration:none;">📈 View Billboard</a>
+          </div>
+          {% endif %}
         {% endif %}
 
         {% if authenticated %}
@@ -406,6 +411,11 @@
             <button type="submit">🚀 Create / Update Playlist</button>
         </form>
         {% endif %}
+  {% if show_billboard %}
+  <div style="text-align:center; margin-top: 1.5rem;">
+    <a href="{{ url_for('billboard') }}" class="file-upload-label" style="display:inline-block; padding:0.75rem 1rem; font-size:0.95rem; text-decoration:none;">📈 View Billboard</a>
+  </div>
+  {% endif %}
 
         <button class="collapsible" onclick="toggleInstructions()">ℹ️ How to upload a WhatsApp chat</button>
         <div class="instruction-box" id="instructionBox">
