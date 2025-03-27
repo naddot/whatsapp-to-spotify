@@ -76,6 +76,11 @@ def index():
             return redirect(url_for('index'))
 
         track_ids = extract_spotify_track_ids(chat_text)
+        # Auto-delete uploaded file after processing
+        try:
+            os.remove(file_path)
+        except Exception as e:
+            print(f"⚠️ Could not delete file {file_path}: {e}")
         if not track_ids:
             flash("No Spotify track links found in the file.")
             return redirect(url_for('index'))
