@@ -6,6 +6,9 @@ import os
 import zipfile
 import io
 
+# === Optional: To avoid port conflicts, run the app like this ===
+# streamlit run main.py --server.port=8502
+
 # === Set environment variables using Streamlit secrets ===
 os.environ['SPOTIPY_CLIENT_ID'] = st.secrets["SPOTIPY_CLIENT_ID"]
 os.environ['SPOTIPY_CLIENT_SECRET'] = st.secrets["SPOTIPY_CLIENT_SECRET"]
@@ -49,27 +52,29 @@ def extract_spotify_track_ids(text):
 # === Streamlit UI ===
 st.set_page_config(page_title="WhatsApp to Spotify", layout="centered")
 
+st.info("🛠️ Tip: If you're getting a port error, run with `--server.port=8502`.")
+
 st.title("📲 WhatsApp to Spotify Playlist")
 
 st.markdown("Upload a WhatsApp chat export (.zip or .txt) and we'll add all the Spotify songs to a playlist in your account.")
 
 with st.expander("ℹ️ How to export a WhatsApp chat (.txt file)"):
     st.markdown("""
-    **📱 On iPhone:**
-    1. 📂 Open WhatsApp > the chat you want to export
-    2. 👤 Tap the contact's name or group title
-    3. 📤 Tap **Export Chat** > Choose **Without Media**
-    4. 💾 Choose **Save to Files** > Pick a folder (e.g. iCloud Drive or local)
-    5. 📦 WhatsApp will save the export as a `.zip` with a `.txt` inside
+    **✅ Recommended (Simple!): Email the chat to yourself**
 
-    **🤖 On Android:**
     1. 📂 Open WhatsApp > the chat you want to export
-    2. ⋮ Tap the 3 dots > **More** > **Export Chat** > **Without Media**
-    3. 💾 Choose **Save to Drive** or another cloud storage option
-    4. 📥 Once uploaded, go to Google Drive app
-    5. 📁 Locate the `.zip`, tap it, then **Download** it to your device
+    2. Tap `⋮` or chat options > **Export Chat** > Choose **Without Media**
+    3. 📧 Select **Gmail**, **Mail**, or any email app
+    4. Send the chat to yourself
+    5. Open the email and download the `.txt` file
+    6. Upload the `.txt` file here 👆
 
-    ✅ You can now upload that `.zip` file here. This app will extract the `.txt` for you automatically.
+    **🛠️ Alternate (Advanced): Use Drive/iCloud Export**
+
+    If WhatsApp saves a `.zip`:
+    1. Locate it in Drive or Files
+    2. Download it to your phone or desktop
+    3. Upload the `.zip` file here (we'll extract the `.txt` for you)
     """)
 
 uploaded_file = st.file_uploader("📎 Upload WhatsApp .zip or .txt File", type=["txt", "zip"])
