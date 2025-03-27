@@ -56,11 +56,13 @@ def index():
             flash("Please provide both a playlist name and a file.")
             return redirect(url_for('index'))
 
+        from zipfile import is_zipfile
+
         filename = secure_filename(file.filename)
         file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         file.save(file_path)
 
-        if filename.endswith('.zip'):
+        if is_zipfile(file_path):
             with zipfile.ZipFile(file_path, 'r') as zip_ref:
                 txt_files = [f for f in zip_ref.namelist() if f.endswith('.txt')]
                 if not txt_files:
@@ -74,6 +76,7 @@ def index():
         else:
             flash("Unsupported file format. Upload a .zip or .txt file.")
             return redirect(url_for('index'))
+
 
         track_ids = extract_spotify_track_ids(chat_text)
         if not track_ids:
