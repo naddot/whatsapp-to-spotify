@@ -109,12 +109,9 @@ def index():
         return redirect(url_for('index'))
 
     sp_oauth = SpotifyOAuth(scope=SCOPE)
-    token_info = session.get('token_info')
-
-    if not token_info or sp_oauth.is_token_expired(token_info):
-        session.pop('token_info', None)
-        flash("Please log in with Spotify to continue.")
-        return redirect(sp_oauth.get_authorize_url())
+    session.pop('token_info', None)
+    flash("Please log in with Spotify to continue.")
+    return redirect(sp_oauth.get_authorize_url())
 
     sp = Spotify(auth=token_info['access_token'])
     user_id = sp.me()['id']
