@@ -367,9 +367,6 @@
     </style>
 </head>
 <body class="dark-mode">
-    <div class="flash" style="background-color:#eafaf1; color:#207446; border-color:#c2f0d3; font-size:0.85rem;">
-        🔐 <strong>Privacy Promise:</strong> Your WhatsApp chat file is never stored. We only extract Spotify links, and the file is deleted immediately after processing.
-      </div>
     <div class="container">
         <div class="dark-toggle">
             <label>
@@ -377,7 +374,9 @@
                 🌙 Dark Mode
             </label>
         </div>
-
+        <div class="flash" style="background-color:#eafaf1; color:#207446; border-color:#c2f0d3; font-size:0.85rem;">
+            🔐 <strong>Privacy Promise:</strong> Your WhatsApp chat file is never stored. We only extract Spotify links, and the file is deleted immediately after processing.
+          </div>
         <h1>🎧 WhatsApp ➜ Spotify</h1>
 
         {% with messages = get_flashed_messages() %}
@@ -412,7 +411,9 @@
         <div class="instruction-box" id="instructionBox">
         💡 Loading upload instructions...
         </div>
+        
     </div>
+    
     <script>
         function toggleInstructions() {
           const box = document.getElementById('instructionBox');
