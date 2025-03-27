@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>WhatsApp ➜ Spotify</title>
     <style>
         :root {
@@ -14,6 +14,10 @@
             --text-light: #eaeaea;
             --card-dark: #1f1f1f;
             --shadow: 0 4px 20px rgba(0,0,0,0.05);
+        }
+
+        * {
+            -webkit-tap-highlight-color: transparent;
         }
 
         body.dark-mode {
@@ -48,17 +52,21 @@
         body {
             font-family: 'Segoe UI', sans-serif;
             margin: 0;
-            padding: 1rem;
+            padding: env(safe-area-inset-top, 1rem) 1rem env(safe-area-inset-bottom, 1.5rem);
             background-color: var(--bg-light);
             color: var(--text-dark);
             transition: background-color 0.3s, color 0.3s;
+            -webkit-font-smoothing: antialiased;
+            -webkit-user-select: none;
+            user-select: none;
         }
 
         .container {
-            max-width: 500px;
+            max-width: 100%;
+            width: 100%;
             margin: auto;
             background: white;
-            padding: 2rem 1.5rem;
+            padding: 1.75rem 1rem;
             border-radius: 16px;
             box-shadow: var(--shadow);
             animation: fadeIn 0.5s ease;
@@ -72,8 +80,8 @@
         h1 {
             text-align: center;
             color: var(--primary);
-            margin-bottom: 1.5rem;
-            font-size: 1.8rem;
+            margin-bottom: 1.2rem;
+            font-size: 1.5rem;
         }
 
         form {
@@ -87,8 +95,7 @@
             font-size: 0.95rem;
         }
 
-        input[type="text"],
-        input[type="file"] {
+        input[type="text"] {
             padding: 0.65rem;
             font-size: 1rem;
             border: 1px solid #ccc;
@@ -96,11 +103,33 @@
             transition: all 0.2s ease;
         }
 
-        input[type="text"]:focus,
-        input[type="file"]:focus {
+        input[type="text"]:focus {
             box-shadow: 0 0 0 2px rgba(29,185,84,0.3);
             border-color: var(--primary);
             outline: none;
+        }
+
+        .file-upload-label {
+            display: inline-block;
+            background-color: var(--primary);
+            color: white;
+            padding: 0.75rem;
+            text-align: center;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            margin-bottom: 0.5rem;
+        }
+
+        .file-upload-label:hover {
+            background-color: var(--primary-dark);
+        }
+
+        #fileNameDisplay {
+            font-size: 0.85rem;
+            color: #888;
+            text-align: center;
         }
 
         button {
@@ -113,6 +142,10 @@
             font-weight: 600;
             cursor: pointer;
             transition: background-color 0.2s ease, transform 0.2s ease;
+        }
+
+        button:active {
+            transform: scale(0.98);
         }
 
         button:hover {
@@ -157,12 +190,9 @@
             cursor: pointer;
         }
 
-        @media (max-width: 600px) {
+        @media (min-width: 600px) {
             .container {
-                padding: 1.25rem 1rem;
-            }
-            h1 {
-                font-size: 1.5rem;
+                max-width: 500px;
             }
         }
     </style>
@@ -191,7 +221,9 @@
             <input type="text" id="playlist_name" name="playlist_name" placeholder="e.g. WhatsApp Songs" required>
 
             <label for="chat_file">📎 Upload WhatsApp .zip or .txt:</label>
-            <input type="file" id="chat_file" name="chat_file" accept=".zip,.txt" required>
+            <label for="chat_file" class="file-upload-label">📂 Choose from Files, Drive, or iCloud</label>
+            <input type="file" id="chat_file" name="chat_file" accept=".zip,.txt" required style="display:none;">
+            <p id="fileNameDisplay"></p>
 
             <button type="submit">🚀 Create / Update Playlist</button>
         </form>
@@ -207,6 +239,14 @@
 
         toggle.addEventListener('change', () => {
             body.classList.toggle('dark-mode', toggle.checked);
+        });
+
+        const fileInput = document.getElementById('chat_file');
+        const fileDisplay = document.getElementById('fileNameDisplay');
+
+        fileInput.addEventListener('change', () => {
+            const fileName = fileInput.files[0]?.name || '';
+            fileDisplay.textContent = fileName ? `Selected: ${fileName}` : '';
         });
     </script>
 </body>
