@@ -101,14 +101,67 @@
     <title>WhatsApp ➜ Spotify</title>
     <style>
         :root {
-            --primary: #1DB954;
-            --primary-dark: #17a34a;
-            --bg-light: #f5f5f5;
-            --text-dark: #333;
-            --bg-dark: #121212;
-            --text-light: #eaeaea;
-            --card-dark: #1f1f1f;
-            --shadow: 0 4px 20px rgba(0,0,0,0.05);
+        --primary: #1DB954;
+        --primary-dark: #17a34a;
+        --bg-light: #f5f5f5;
+        --text-dark: #333;
+        --bg-dark: #121212;
+        --text-light: #eaeaea;
+        --card-dark: #1f1f1f;
+        --shadow: 0 4px 20px rgba(0,0,0,0.05);
+        }
+
+        .collapsible {
+        background: none;
+        color: var(--primary);
+        border: none;
+        font-size: 0.95rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        margin: 1rem auto 0;
+        font-weight: 600;
+        padding: 0.5rem 2;
+        }
+
+        .collapsible:hover {
+        text-decoration: underline;
+        }
+
+        .instruction-box {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.5s ease, opacity 0.5s ease;
+        opacity: 0;
+        font-size: 0.85rem;
+        color: #666;
+        padding: 0 0.75rem;
+        text-align: left;
+        line-height: 1.5;
+        }
+
+        .instruction-box.show {
+        max-height: 500px;
+        opacity: 1;
+        margin-top: 0.5rem;
+        }
+
+        .instruction-box ul {
+        padding-left: 1.2rem;
+        list-style-type: none;
+        }
+
+        .instruction-box li::before {
+        content: '🎵';
+        margin-right: 0.5rem;
+        }
+
+        .instruction-box code {
+        background: #eee;
+        border-radius: 4px;
+        padding: 0.1rem 0.3rem;
+        font-size: 0.82rem;
         }
 
         * {
@@ -352,11 +405,45 @@
         </form>
         {% endif %}
 
-        <p class="info">
-            💡 Tip: Export a WhatsApp chat using <strong>"Email Chat"</strong> without media. Save or download the `.txt` file (or extract it from the `.zip`) and upload it here. We’ll add the songs to your Spotify playlist!
-        </p>
+        <button class="collapsible" onclick="toggleInstructions()">ℹ️ How to upload a WhatsApp chat</button>
+        <div class="instruction-box" id="instructionBox">
+        💡 Loading upload instructions...
+        </div>
     </div>
-
+    <script>
+        function toggleInstructions() {
+          const box = document.getElementById('instructionBox');
+          box.classList.toggle('show');
+        }
+    
+        const box = document.getElementById('instructionBox');
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+        const isAndroid = /Android/.test(navigator.userAgent);
+    
+        if (isIOS) {
+          box.innerHTML = `🍏 <strong>iOS users:</strong><ul>
+            <li>Open WhatsApp, go to the chat.</li>
+            <li>Tap the contact name → <strong>Export Chat</strong>.</li>
+            <li>Choose <em>Without Media</em>.</li>
+            <li>Save to <strong>Files</strong> or <strong>iCloud Drive</strong>.</li>
+            <li>Then upload the <code>.txt</code> or <code>.zip</code> file here.</li>
+          </ul>`;
+        } else if (isAndroid) {
+          box.innerHTML = `🤖 <strong>Android users:</strong><ul>
+            <li>Open WhatsApp, go to the chat.</li>
+            <li>Tap the 3-dot menu → <strong>More > Export chat</strong>.</li>
+            <li>Choose <em>Without Media</em>.</li>
+            <li>Save to <strong>Google Drive</strong> or <strong>Downloads</strong>.</li>
+            <li>Then upload the <code>.txt</code> or <code>.zip</code> file here.</li>
+          </ul>`;
+        } else {
+          box.innerHTML = `💾 <strong>How to upload:</strong><ul>
+            <li>Export your WhatsApp chat <em>without media</em>.</li>
+            <li>Save the <code>.txt</code> or <code>.zip</code> file.</li>
+            <li>Upload it using the form above to build your playlist 🎶</li>
+          </ul>`;
+        }
+      </script>
     <script>
         const toggle = document.getElementById('darkModeToggle');
         const body = document.body;
@@ -375,7 +462,6 @@
     </script>
 </body>
 </html>
-
 
 </body>
 </html>
