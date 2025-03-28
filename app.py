@@ -111,6 +111,7 @@ def index():
     sp_oauth = SpotifyOAuth(scope=SCOPE)
     session.pop('token_info', None)
     flash("Please log in with Spotify to continue.")
+    session['post_auth_redirect'] = request.path
     return redirect(sp_oauth.get_authorize_url())
 
     sp = Spotify(auth=token_info['access_token'])
@@ -147,6 +148,13 @@ def callback():
         flash("Failed to get access token from Spotify.")
         return redirect(url_for('index'))
 
+    # Store token with expiry
+    session['token_info'] = token_info
+    session['token_expires_at'] = token_info['expires_at']
+
+    flash("Spotify authentication successful.")
+    return redirect(url_for('index'))
+
     session['token_info'] = token_info
     flash("Spotify authentication successful.")
     return redirect(url_for('index'))
@@ -154,7 +162,23 @@ def callback():
 @app.route('/share', methods=['POST'])
 def share():
     playlist_id = request.form.get('playlist_id')
+
+    sp_oauth = SpotifyOAuth(scope=SCOPE)
     token_info = session.get('token_info')
+    expires_at = session.get('token_expires_at')
+    if not token_info or not expires_at or int(expires_at) <= int(datetime.utcnow().timestamp()):
+        session.pop('token_info', None)
+        session.pop('token_expires_at', None)
+        flash("Please log in with Spotify to continue.")
+        return redirect(sp_oauth.get_authorize_url())
+
+
+    expires_at = session.get('token_expires_at')
+    if not token_info or not expires_at or int(expires_at) <= int(datetime.utcnow().timestamp()):
+        session.pop('token_info', None)
+        session.pop('token_expires_at', None)
+        flash("Your Spotify session expired. Please re-authenticate.")
+        return redirect(url_for('connect'))
 
     if not playlist_id or not token_info:
         flash("Missing playlist or session. Please try again.")
